@@ -60,6 +60,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     //vars
     Button sendInfo;
+    Button getInfo;
     private Boolean mLocationPermissionGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -70,7 +71,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
 
         sendInfo = (Button) findViewById(R.id.sendInfo);
-
+        getInfo = (Button) findViewById(R.id.getService);
         getLocationPermission();
 
         sendInfo.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +80,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 sendLocation();
             }
         });
+
+        getInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getService();
+            }
+        });
     }
+
+    // Get the service in JSON
+    private void getService() {
+    }
+
+    // Consume the service of API
+
 
     private void sendLocation(){
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -91,12 +106,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     public void onComplete(@NonNull Task task) {
                         if(task.isSuccessful()&& task.getResult()!= null){
                             Location currentLocation = (Location) task.getResult();
-                            Toast.makeText(MapActivity.this, "Lat" + currentLocation.getLatitude() + " Long:" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
-                            JSONObject jsonLocation = new JSONObject();
-                            try{
-                                jsonLocation.put("Lat: ", currentLocation.getLatitude());
-                                jsonLocation.put("Long: ", currentLocation.getLongitude());
-                            } catch (JSONException e){}
+                            //Toast.makeText(MapActivity.this, "Lat" + currentLocation.getLatitude() + " Long:" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+                            ServicioTask servicioTask = new ServicioTask(MapActivity.this,"http://192.168.0.39:3000/api" , currentLocation.getLatitude(), currentLocation.getLongitude());
+                            servicioTask.execute();
 
                         }
 
