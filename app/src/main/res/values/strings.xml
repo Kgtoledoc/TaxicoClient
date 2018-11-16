@@ -7,5 +7,6 @@
     <string name="historico">Historico</string>
     <string name="sendInfo">Enviar localización</string>
     <string name="obtener_servicio">Obtener servicio</string>
+    <string name="marcador">Marcador</string>
 
 </resources>

@@ -16,8 +16,15 @@
         android:id="@+id/getService"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="460dp"
         android:text="@string/obtener_servicio" />
+
+    <Button
+        android:layout_marginTop="50dp"
+        android:id="@+id/marker"
+        android:text="@string/marcador"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"

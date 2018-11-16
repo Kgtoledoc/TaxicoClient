@@ -1,12 +1,16 @@
 package com.ibm.taxicoclient;
 
 import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -33,6 +37,8 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    private AlertDialog alert;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -61,6 +67,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     //vars
     Button sendInfo;
     Button getInfo;
+    Button marker;
     private Boolean mLocationPermissionGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -72,6 +79,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         sendInfo = (Button) findViewById(R.id.sendInfo);
         getInfo = (Button) findViewById(R.id.getService);
+        marker = (Button) findViewById(R.id.marker);
         getLocationPermission();
 
         sendInfo.setOnClickListener(new View.OnClickListener() {
@@ -84,13 +92,45 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         getInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getService();
+
+            }
+        });
+
+        marker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveCameraOption();
             }
         });
     }
 
-    // Get the service in JSON
-    private void getService() {
+    // Move the camera
+    private void moveCameraOption() {
+
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        try {
+            if(mLocationPermissionGranted){
+                final Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if(task.isSuccessful()&& task.getResult()!= null){
+                            Location currentLocation = (Location) task.getResult();
+                            //Toast.makeText(MapActivity.this, "Lat" + currentLocation.getLatitude() + " Long:" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),DEFAULT_ZOOM);
+                        }
+
+                    }
+                });
+
+            }
+
+        } catch (SecurityException e){
+            Log.e(TAG, "getDeviceLocation: Security Exception" + e.getMessage());
+
+        }
+
+
     }
 
     // Consume the service of API
@@ -109,7 +149,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             //Toast.makeText(MapActivity.this, "Lat" + currentLocation.getLatitude() + " Long:" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                             ServicioTask servicioTask = new ServicioTask(MapActivity.this,"http://192.168.0.39:3000/api" , currentLocation.getLatitude(), currentLocation.getLongitude());
                             servicioTask.execute();
-
                         }
 
                     }
@@ -141,7 +180,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),DEFAULT_ZOOM);
                         } else {
                             Log.d(TAG, "onComplete: current location is null");
-                            Toast.makeText(MapActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MapActivity.this, "Unable to get current location", Toast.LENGTH_SHORT).show();
+                            AlertNoGPS();
+
+
                         }
                     }
                 });
@@ -151,11 +193,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    private void AlertNoGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("El sistema GPS esta desactivado. ¿Desea activarlo?")
+                .setCancelable(false)
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        alert = builder.create();
+        alert.show();
+            
+    }
+
+    // Move the camera
     private void moveCamera(LatLng latLng, float zoom){
         Log.d(TAG, "moveCamera: moving the camera to the lat:" + latLng.latitude + ", lng: " +latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
+    // Init the fragment of the MAP
     private void initMap(){
         Log.d(TAG, "InitMap: Initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -163,6 +228,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(MapActivity.this);
     }
 
+    // Obtain Location Permission
     private void getLocationPermission(){
         Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -201,7 +267,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     Log.d(TAG, "onRequestPermissionsResult: permission granted");
                     mLocationPermissionGranted = true;
                     // Initialize our map
-
                     initMap();
                 }
             }
