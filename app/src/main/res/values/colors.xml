@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#ede861</color>
+    <color name="colorFondoBotones">#eae315</color>
     <color name="colorPrimaryDark">#4b4a02</color>
     <color name="colorAccent">#938a0d</color>
     <color name="colorActionBarTitle">#1e1e1e</color>

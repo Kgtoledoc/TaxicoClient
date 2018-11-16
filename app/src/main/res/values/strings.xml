@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">TaxicoClient</string>
+    <string name="app_name">Taxico</string>
     <string name="inicio">Inicio</string>
     <string name="perfil">Perfil</string>
     <string name="logout">Cerrar sesión</string>
-    <string name="mapa">Mapa</string>
+    <string name="mapa">Inicio</string>
     <string name="historico">Historico</string>
     <string name="sendInfo">Enviar localización</string>
     <string name="obtener_servicio">Obtener servicio</string>

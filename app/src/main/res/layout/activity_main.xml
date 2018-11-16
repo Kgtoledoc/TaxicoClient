@@ -8,6 +8,9 @@
     tools:context=".MainActivity">
 
     <Button
+        android:textColor="@color/common_google_signin_btn_text_dark"
+        android:background="@color/colorPrimaryDark"
+        android:layout_marginTop="200dp"
         android:layout_gravity="center"
         android:text="@string/mapa"
         android:layout_width="wrap_content"

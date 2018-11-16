@@ -6,32 +6,53 @@
     android:layout_height="match_parent"
     tools:context=".MapActivity">
 
-    <Button
-        android:id="@+id/sendInfo"
-        android:text="@string/sendInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <Button
+
         android:id="@+id/getService"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="460dp"
-        android:text="@string/obtener_servicio" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/drawable_bottom"
+        android:text="@string/obtener_servicio"
+        android:textColor="@color/common_google_signin_btn_text_dark" />
 
     <Button
-        android:layout_marginTop="50dp"
-        android:id="@+id/marker"
-        android:text="@string/marcador"
+        style=""
+        android:id="@+id/sendInfo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/marker"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="-96dp"
+        android:background="@drawable/drawable_bottom"
+        android:text="@string/sendInfo"
+        android:textColor="@color/common_google_signin_btn_text_dark" />
+
+    <Button
+        android:id="@+id/marker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/drawable_bottom"
+        android:text="@string/marcador"
+        android:textColor="@color/common_google_signin_btn_text_dark" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/map"
-        tools:context=".MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        tools:context=".MapsActivity" />
 
 </RelativeLayout>
